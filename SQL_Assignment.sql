@@ -156,7 +156,7 @@ group by film.title
 order by count(rental.rental_id) desc ;
 
 -- 7f. Write a query to display how much business, in dollars, each store brought in.
-select store.store_id, sum(
+select store, total_sales from sales_by_store ;
 
 -- 7g. Write a query to display for each store its store ID, city, and country.
 select store.store_id, city.city, country.country
@@ -165,19 +165,45 @@ inner join address on
 store.address_id=address.address_id
 inner join city on
 address.city_id=city.city_id
-inner join county on
-city.country_id=country.country_id
-group by store.store_id ;
+inner join country on
+city.country_id=country.country_id ;
 
 -- 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
-category, film_category, inventory, payment, and rental.
--- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. 
--- Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+select category.name, sum(payment.amount)
+from category
+inner join film_category on
+category.category_id=film_category.category_id 
+inner join inventory on
+film_category.film_id=inventory.film_id
+inner join rental on
+inventory.inventory_id=rental.inventory_id
+inner join payment on
+rental.rental_id=payment.rental_id
+group by category.name
+order by sum(payment.amount) desc
+Limit 5 ;
+
+-- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue.  Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+create view Top_five_Genres as 
+select category.name, sum(payment.amount)
+from category
+inner join film_category on
+category.category_id=film_category.category_id 
+inner join inventory on
+film_category.film_id=inventory.film_id
+inner join rental on
+inventory.inventory_id=rental.inventory_id
+inner join payment on
+rental.rental_id=payment.rental_id
+group by category.name
+order by sum(payment.amount) desc
+Limit 5 ;
 
 -- 8b. How would you display the view that you created in 8a?
+SELECT * FROM sakila.top_five_genres;
 
 -- 8c. You find that you no longer need the view `top_five_genres`. Write a query to delete it.
-
+drop view sakila.top_five_genres;
 
 -- END
--
+
