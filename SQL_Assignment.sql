@@ -21,8 +21,7 @@ select concat(first_name , ' ', last_name) as 'Actor Name'
  from actor 
  where last_name like '%GEN%';
  
--- 2c. Find all actors whose last names contain the letters `LI`. 
--- This time, order the rows by last name and first name, in that order:
+-- 2c. Find all actors whose last names contain the letters `LI`. This time, order the rows by last name and first name, in that order:
 select last_name, first_name
 from actor
 where last_name like '%LI%' 
@@ -147,14 +146,31 @@ category.category_id=film_category.category_id
 where category.name= 'Family' ;
 
 -- 7e. Display the most frequently rented movies in descending order.
-
+select film.film_id, film.title, count(rental.rental_id)
+from film 
+inner join inventory on
+film.film_id=inventory.film_id
+inner join rental on
+inventory.inventory_id=rental.inventory_id
+group by film.title 
+order by count(rental.rental_id) desc ;
 
 -- 7f. Write a query to display how much business, in dollars, each store brought in.
+select store.store_id, sum(
 
 -- 7g. Write a query to display for each store its store ID, city, and country.
+select store.store_id, city.city, country.country
+from store
+inner join address on
+store.address_id=address.address_id
+inner join city on
+address.city_id=city.city_id
+inner join county on
+city.country_id=country.country_id
+group by store.store_id ;
 
 -- 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
-
+category, film_category, inventory, payment, and rental.
 -- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. 
 -- Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
 
